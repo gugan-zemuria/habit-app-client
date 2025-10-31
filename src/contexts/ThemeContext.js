@@ -11,10 +11,9 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     setMounted(true);
     
-    // Check for saved theme preference, system preference, or default to light
+    // Default to light unless a saved preference exists
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    const initialTheme = savedTheme || 'light';
     
     setTheme(initialTheme);
     document.documentElement.setAttribute('data-theme', initialTheme);

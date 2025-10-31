@@ -404,6 +404,11 @@ input, textarea {
   transition: all 0.2s ease;
 }
 
+/* Add vertical spacing between stacked cards */
+.card + .card {
+  margin-top: 1rem;
+}
+
 .card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);

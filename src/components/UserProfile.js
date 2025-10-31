@@ -210,13 +210,15 @@ export default function UserProfile() {
                   className={`theme-option ${theme === 'light' ? 'active' : ''}`}
                   onClick={() => setTheme('light')}
                 >
-                  ☀️ Light
+                  <span className="material-symbols-outlined" aria-hidden="true">light_mode</span>
+                  <span>Light</span>
                 </button>
                 <button
                   className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
                   onClick={() => setTheme('dark')}
                 >
-                  🌙 Dark
+                  <span className="material-symbols-outlined" aria-hidden="true">dark_mode</span>
+                  <span>Dark</span>
                 </button>
               </div>
             </div>
