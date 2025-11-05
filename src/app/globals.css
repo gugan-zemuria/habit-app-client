@@ -2575,7 +2575,7 @@ ogress View Styles */
 .progress-header h1 {
   font-size: 2rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
