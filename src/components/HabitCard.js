@@ -102,7 +102,7 @@ export default function HabitCard({ habit, onEdit, onDelete, onToggleCompletion 
       </div>
 
       <div>
-        <div style={{ marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
+        <div style={{ marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)' }}>
           Last 14 Days
         </div>
         <div className="completion-history">

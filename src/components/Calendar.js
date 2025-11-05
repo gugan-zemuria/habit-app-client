@@ -54,6 +54,14 @@ export default function Calendar() {
   };
 
   const toggleHabitCompletion = async (date, habitId) => {
+    // Prevent completing habits for future dates
+    const today = new Date().toISOString().split('T')[0];
+    if (date > today) {
+      setError('Cannot complete habits for future dates');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
     try {
       const token = await getAccessToken();
       
@@ -103,6 +111,10 @@ export default function Calendar() {
   };
 
   const getDayStatus = (dateStr) => {
+    // Don't show completion status for future dates
+    const today = new Date().toISOString().split('T')[0];
+    if (dateStr > today) return 'none';
+    
     const completed = completions[dateStr] || [];
     if (completed.length === 0) return 'none';
     if (completed.length === habits.length) return 'complete';
@@ -126,21 +138,23 @@ export default function Calendar() {
       const dayNumber = i - startingDayOfWeek + 1;
       const isValidDay = dayNumber > 0 && dayNumber <= daysInMonth;
       const dateStr = isValidDay ? formatDate(year, month, dayNumber) : '';
-      const status = isValidDay ? getDayStatus(dateStr) : 'empty';
+      const isFutureDate = dateStr > today;
+      // Force future dates to have 'none' status regardless of data
+      const status = isValidDay ? (isFutureDate ? 'none' : getDayStatus(dateStr)) : 'empty';
       const isToday = dateStr === today;
       const isSelected = dateStr === selectedDate;
-
+      
       days.push(
         <div
           key={i}
-          className={`calendar-day ${status} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
+          className={`calendar-day ${status} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isFutureDate ? 'future' : ''}`}
           onClick={() => isValidDay && setSelectedDate(dateStr)}
         >
           {isValidDay && (
             <>
               <span className="day-number">{dayNumber}</span>
-              {status === 'complete' && <span className="status-indicator">✓</span>}
-              {status === 'partial' && <span className="status-indicator">●</span>}
+              {!isFutureDate && status === 'complete' && <span className="status-indicator">✓</span>}
+              {!isFutureDate && status === 'partial' && <span className="status-indicator">●</span>}
             </>
           )}
         </div>
@@ -202,15 +216,18 @@ export default function Calendar() {
           <div className="habits-list">
             {habits.map(habit => {
               const isCompleted = (completions[selectedDate] || []).includes(habit.id);
+              const isFutureDate = selectedDate > today;
               return (
                 <div
                   key={habit.id}
-                  className={`habit-item ${isCompleted ? 'completed' : ''}`}
-                  onClick={() => toggleHabitCompletion(selectedDate, habit.id)}
+                  className={`habit-item ${isCompleted ? 'completed' : ''} ${isFutureDate ? 'future-date' : ''}`}
+                  onClick={() => !isFutureDate && toggleHabitCompletion(selectedDate, habit.id)}
+                  style={{ cursor: isFutureDate ? 'not-allowed' : 'pointer', opacity: isFutureDate ? 0.6 : 1 }}
                 >
                   <span className="habit-icon">{habit.emoji}</span>
                   <span className="habit-name">{habit.name}</span>
                   <span className="habit-check">{isCompleted ? '✓' : ''}</span>
+                  {isFutureDate && <span className="future-indicator">🔒</span>}
                 </div>
               );
             })}
